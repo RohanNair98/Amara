@@ -45,7 +45,7 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-login(token='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')
+login(token='your_hugging_face_token')
 model_name = "meta-llama/Llama-2-7b-chat-hf"
 device = "cpu"
 
