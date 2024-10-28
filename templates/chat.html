@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Amara</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            margin-left: 20%;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            margin-right: 20%;
+        }
+        .input-container {
+            display: flex;
+            gap: 10px;
+        }
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+        }
+        .sentiment-indicator {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chat with Amara</h1>
+        <div id="chat-container" class="chat-container"></div>
+        <div class="input-container">
+            <input type="text" id="message-input" placeholder="Type your message..." required>
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            function addMessage(message, isUser, sentiment = null) {
+                const messageDiv = $('<div>').addClass('message')
+                    .addClass(isUser ? 'user-message' : 'bot-message')
+                    .text(message);
+                
+                if (sentiment !== null && !isUser) {
+                    const sentimentText = sentiment > 0 ? 'Positive' : sentiment < 0 ? 'Negative' : 'Neutral';
+                    const sentimentDiv = $('<div>').addClass('sentiment-indicator')
+                        .text(`Sentiment: ${sentimentText} (${sentiment.toFixed(2)})`);
+                    messageDiv.append(sentimentDiv);
+                }
+                
+                $('#chat-container').append(messageDiv);
+                $('#chat-container').scrollTop($('#chat-container')[0].scrollHeight);
+            }
+
+            // Load chat history
+            $.get('/chat_history', function(history) {
+                history.reverse().forEach(chat => {
+                    addMessage(chat.user_message, true);
+                    addMessage(chat.bot_response, false, chat.sentiment);
+                });
+            });
+
+            function sendMessage() {
+                const message = $('#message-input').val().trim();
+                if (!message) return;
+
+                $('#message-input').val('');
+                $('#send-button').prop('disabled', true);
+                addMessage(message, true);
+
+                $.ajax({
+                    url: '/chat',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ message: message }),
+                    success: function(response) {
+                        addMessage(response.response, false, response.sentiment);
+                        $('#send-button').prop('disabled', false);
+                    },
+                    error: function(xhr, status, error) {
+                        addMessage('Sorry, there was an error processing your message.', false);
+                        $('#send-button').prop('disabled', false);
+                    }
+                });
+            }
+
+            $('#send-button').click(sendMessage);
+            $('#message-input').keypress(function(e) {
+                if (e.which == 13) sendMessage();
+            });
+        });
+    </script>
+</body>
+</html>
