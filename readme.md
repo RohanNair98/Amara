@@ -16,3 +16,5 @@ The Functionalities are mentioned below.
 * The chats are stored in the sqlite db along with the sentiment score and they are retrieved each time the user logs in. So the chats are more personalized.
 
 If you have Cuda installed, then comment the line  device='cpu'.
+
+app.py contains the REST API using grok
