@@ -3,3 +3,10 @@ huggingface_hub==0.24.3
 textblob==0.18.0.post0
 torch==2.1.2
 transformers==4.45.2
+fastapi
+uvicorn[standard]
+sqlite3
+textblob
+groq
+hashlib
+pydantic
