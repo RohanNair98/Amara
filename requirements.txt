@@ -10,3 +10,4 @@ textblob
 groq
 hashlib
 pydantic
+gunicorn
