@@ -7,6 +7,5 @@ fastapi
 uvicorn[standard]
 textblob
 groq
-hashlib
 pydantic
 gunicorn
