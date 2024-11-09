@@ -5,7 +5,6 @@ torch==2.1.2
 transformers==4.45.2
 fastapi
 uvicorn[standard]
-sqlite3
 textblob
 groq
 hashlib
