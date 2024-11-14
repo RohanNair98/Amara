@@ -1,3 +1,4 @@
+# Sentiment Analysing Chatbot
 **Chat with Amara, your personal chatbot dedicated for sentiment detection**
 
 There are two chatbots. One integrated with llama 2 7-b and the other with Qwen v2 1.5B.
@@ -6,7 +7,6 @@ There is also a python file which contains the API of the Qwen Model.
 The Functionalities are mentioned below.
 
 * User authentication:
-
   * Login and registration system
   * Session management
   * Password hashing for security
@@ -15,6 +15,6 @@ The Functionalities are mentioned below.
 * Added context from recent conversations
 * The chats are stored in the sqlite db along with the sentiment score and they are retrieved each time the user logs in. So the chats are more personalized.
 
-If you have Cuda installed, then comment the line  device='cpu'.
+If you have Cuda installed, then comment the line  device='cpu' in the py file
 
 app.py contains the REST API using grok
